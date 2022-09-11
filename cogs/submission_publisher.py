@@ -29,15 +29,17 @@ class SubmissionPublisher(Cog):
             try:
                 username = (await self.client.fetch_user(int(user_data['discord_id']))).mention
             except NotFound as e:
-                print(f"WARN: function 'publishSubmission' raised: {e}\n(this probably just means someone submitted a succesful solution who is not in the discord server)")
+                print(f"WARN: function 'parse_get' raised: {e}\n(this probably just means someone submitted a succesful solution who is not in the discord server)")
             yield self.Submission(username, problem_data['title'], item['code'])
-
+    
+    # async function that takes a parsed submission and sends a message in the submissions channel with the username of the submitter and the name of the problem they solved
+    # followed by as many messages of code as are required to send the whole solution given Discord's 2000 character message limit
     async def print_submission(self, submission):
         await self.channel.send(f"{submission.username} has successfully completed {submission.problem_title} with the following solution:")
         submission_code = submission.code.translate("```", "").split('\n') # the translate sanatizes any triple backticks in the original code which would mess up the code formatting
         code_messages = []
         cur_message = "```cpp\n"
-        msg_length = 7 # fromatting characters such as the ```cpp and \n are counted in Discord's message limit so we have to take them into account
+        msg_length = 7 # formatting characters such as the ```cpp and \n are counted in Discord's message limit so we have to take them into account
         for line in submission_code:
             if(len(line) + 11 >= 2000): # the message must be 2000 characters including the 11 minimum formatting characters
                 code_messages = [f"`Can't display solution in a coherent manner (line {submission_code.index(line) + 1} alone goes over the Discord message character limit)`"]
