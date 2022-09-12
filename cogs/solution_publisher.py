@@ -19,10 +19,8 @@ class SolutionPublisher(Cog):
 
     # async function that queries the website's api for any successful solutions submitted since the last iteration of the event loop
     async def parse_get(self):
-        print(self.last_called)
         data = get('https://api.meters.sh/submissions/new-completions', params = {'since': self.last_called}).json()
         self.last_called = datetime.utcnow().isoformat()
-        print(f"data from one submission: {data}")
         for item in data:
             problem_data = get(f"https://api.meters.sh/problems/{item['problem_id']}").json()
             user_data = get(f"https://api.meters.sh/user/id/{item['user_id']}").json()
