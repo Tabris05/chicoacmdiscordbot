@@ -11,11 +11,11 @@ class SolutionPublisher(Cog):
         self.client = client # pointer to the bot object
         self.channel = None  # which channel to send the solution messages to
         self.last_called = datetime.utcnow().isoformat() # time elapsed since the last get request
-        self.Solution = namedtuple("solution", "username problem_title problem_id code")
+        self.Solution = namedtuple("solution", "username problem_title problem_id code") # tuple containing all relevent parsed solution data
 
     # cleanup
     def cog_unload(self):
-        self.publish_solution.cancel()
+        self.publish_solutions.cancel()
 
     # async function that queries the website's api for any successful solutions submitted since the last iteration of the event loop
     async def parse_get(self):
@@ -24,6 +24,7 @@ class SolutionPublisher(Cog):
         for item in data:
             problem_data = get(f"https://api.meters.sh/problems/{item['problem_id']}").json()
             user_data = get(f"https://api.meters.sh/user/id/{item['user_id']}").json()
+
             # it is possible, though unlikely, that the submitter is not a member of the discord server, in which case we default to their website username
             username = user_data['username']
             try:
@@ -56,20 +57,20 @@ class SolutionPublisher(Cog):
         for message in code_messages:
             await self.channel.send(message)
 
-    # async function that gets all the successful solutions since it was last called and submits each to self.channel, called once every second
+    # async function that gets all the successful solutions since it was last called and submits each to self.channel, called once every three seconds
     @loop(seconds=3.0)
-    async def publish_solution(self):
+    async def publish_solutions(self):
             async for solution in self.parse_get():
                 await self.print_solution(solution)
 
-    # find the solutions channel and start the publishsolutions coroutine
+    # find the solutions channel and start the publish_solutions coroutine
     @Cog.listener()
     async def on_ready(self):
         for channel in self.client.guilds[0].text_channels:
             if(channel.name == 'solutions'):
                 self.channel = channel
                 break
-        self.publish_solution.start()
+        self.publish_solutions.start()
 
 # loads the cog
 def setup(client):
