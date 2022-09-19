@@ -39,7 +39,7 @@ class SolutionPublisher(Cog):
     # sends a message containing parsed solution data in the solutions channel
     async def print_solution(self, solution):
         await self.channel.send(f"{solution.username} has successfully completed {solution.problem_title} (https://chicoacm.org/problems/{solution.problem_id}) with the following solution:")
-        solution_code = solution.code.split('\n') # the translate sanatizes any triple backticks in the original code which would mess up the code formatting
+        solution_code = solution.code.replace("```", "").split('\n') # the replace sanatizes any triple backticks in the original code which would mess up the code formatting
         code_messages = []
         cur_message = "```cpp\n"
         msg_length = 7 # formatting characters such as the ```cpp and \n are counted in Discord's message limit so we have to take them into account
