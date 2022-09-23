@@ -33,7 +33,7 @@ class SolutionPublisher(Cog):
         try:
             username = (await self.client.fetch_user(int(user_data['discord_id']))).mention
         except NotFound as e:
-            print(f"WARN: function 'parse_get' raised: {e}\n(this probably just means someone submitted a succesful solution who is not in the discord server)")
+            print(f"WARN: function 'parse_solution' raised: {e}\n(this probably just means someone submitted a succesful solution who is not in the discord server)")
         return self.Solution(username, problem_data['title'], problem_data['id'], solution['code'])
     
     # sends a message containing parsed solution data in the solutions channel
