@@ -18,7 +18,7 @@ class WebsocketListener(Cog):
     async def listen(self):
         async with connect('ws://api.meters.sh/ws') as ws:
              for key, value in loads(await ws.recv()).items():
-                if(key == "NewCompletion"):
+                if(key == "NewCompletion" or key == "NewStar"):
                     await self.client.get_cog("SolutionPublisher").publish_solution(value)
 
     # cleanup
