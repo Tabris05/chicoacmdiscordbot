@@ -30,5 +30,5 @@ class WebsocketListener(Cog):
 
 
 # loads the cog
-def setup(client):
-    client.add_cog(WebsocketListener(client))
+async def setup(client):
+    await client.add_cog(WebsocketListener(client))

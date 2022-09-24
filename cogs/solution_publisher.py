@@ -60,5 +60,5 @@ class SolutionPublisher(Cog):
             await self.channel.send(message)
 
 # loads the cog
-def setup(client):
-    client.add_cog(SolutionPublisher(client))
+async def setup(client):
+    await client.add_cog(SolutionPublisher(client))
