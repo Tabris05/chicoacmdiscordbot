@@ -21,7 +21,6 @@ class ProblemPublisher(Cog):
             if(not(thread_dict.get(problem['title'], False))):
                 await self.publish_problem(problem)
 
-    
     # creates a thread in the problems forum for the passed in problem
     async def publish_problem(self, problem):
         return (await self.forum.create_thread(name = problem['title'], content = f"https://chicoacm.org/problems/{problem['id']}")).thread
