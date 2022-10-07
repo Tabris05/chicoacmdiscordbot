@@ -21,7 +21,7 @@ class ProblemPublisher(Cog):
 
     # creates a thread in the problems forum for the passed in problem and adds it to the list of threads stored by the bot
     async def publish_problem(self, problem):
-        await self.client.problems_forum.create_thread(name = problem['title'], content = f"https://chicoacm.org/problems/{problem['id']}").thread
+       return (await self.client.problems_forum.create_thread(name = problem['title'], content = f"https://chicoacm.org/problems/{problem['id']}")).thread
 
 # loads the cog
 async def setup(client):

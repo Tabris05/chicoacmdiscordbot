@@ -16,6 +16,8 @@ class SolutionPublisher(Cog):
         async for thread in self.client.get_all_problem_threads():
             if(thread.name == problem_data['title']):
                 return thread
+        else:
+            return await self.client.get_cog("ProblemPublisher").publish_problem(problem_data)
 
     # parses solution json data and publishes it to the solutions channel
     async def publish_solution(self, solution):
