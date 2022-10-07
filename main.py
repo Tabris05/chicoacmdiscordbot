@@ -6,16 +6,13 @@ from asyncio import run
 
 # entry point of program
 async def main():
-    client = Bot(command_prefix = '!', intents = Intents.default())
-
-    # loads cogs
-    chdir(dirname(abspath(__file__)))
-    for filename in listdir('./cogs'):
-        if filename.endswith('.py'):
-            await client.load_extension(f'cogs.{filename[:-3]}')
-
-    await client.start(getenv('ACMBOT_API_KEY'))
+    async with Bot(command_prefix = '!', intents = Intents.default()) as client:
+        # loads cogs
+        chdir(dirname(abspath(__file__)))
+        for filename in listdir('./cogs'):
+            if filename.endswith('.py'):
+                await client.load_extension(f'cogs.{filename[:-3]}')
+        await client.start(getenv('ACMBOT_API_KEY'))
 
 if(__name__ == "__main__"):
     run(main())
-    

@@ -1,23 +1,28 @@
 from discord.ext.commands import Cog
-from requests import get
+from aiohttp import ClientSession
 
 # a cog that creates a thread in the problems forum for each problem on the site
 class ProblemPublisher(Cog):
     def __init__(self, client):
         self.client = client # reference to the bot object
-        self.forum = None # forum with threads for every problem on the site
 
     # finds the problems forum and creates threads for any problems that do not have one already
     @Cog.listener()
     async def on_ready(self):
-        for forum in self.client.guilds[0].channels:
-            if(forum.name == 'problems'):
-                self.forum = forum
+        for channel in self.client.guilds[0].channels:
+            if(channel.name == 'problems'):
+                archived_threads = []
+                async for thread in channel.archived_threads():
+                    archived_threads.append(thread)
+                self.client.problem_threads = channel.threads + archived_threads
                 break
         thread_dict = {}
-        for thread in self.forum.threads:
+        for thread in self.client.problem_threads:
             thread_dict[thread.name] = True
-        for problem in get("https://api.meters.sh/problems").json():
+        async with ClientSession() as s:
+            async with s.get("https://api.meters.sh/problems") as r:
+                problems = await r.json()
+        for problem in problems:
             if(not(thread_dict.get(problem['title'], False))):
                 await self.publish_problem(problem)
 
