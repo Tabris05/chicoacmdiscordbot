@@ -7,21 +7,13 @@ from datetime import datetime
 class SolutionPublisher(Cog):
     def __init__(self, client):
         self.client = client # reference to the bot object
-    
-    # finds the problems forum
-    @Cog.listener()
-    async def on_ready(self):
-        for forum in self.client.guilds[0].channels:
-            if(forum.name == 'problems'):
-                self.forum = forum
-                break
 
     # finds the forum thread that corresponds to the problem data passed in
     async def find_thread(self, problem_id):
         async with ClientSession() as s:
             async with s.get(f"https://api.meters.sh/problems/{problem_id}") as r:
                 problem_data = await r.json()
-        for thread in self.client.problem_threads:
+        async for thread in self.client.get_all_problem_threads():
             if(thread.name == problem_data['title']):
                 return thread
 
@@ -36,7 +28,7 @@ class SolutionPublisher(Cog):
         code = code if len(code) <= 4096 else "`Solution length exceeds Discord message limit`"
         submission_time = datetime.fromisoformat(f"{solution['time']}+00:00")
         message = Embed(title = "Solution", description = code, timestamp = submission_time)
-        message.add_field(name = "Runtime", value = f"{solution['runtime']}ms")
+        message.add_field(name = "Runtime", value = f"{solution['runtime']} fuel")
         message.add_field(name = "Submitted by", value = username)
         await thread.send(embed = message)
 

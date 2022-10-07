@@ -6,18 +6,11 @@ class ProblemPublisher(Cog):
     def __init__(self, client):
         self.client = client # reference to the bot object
 
-    # finds the problems forum and creates threads for any problems that do not have one already
+    # creates threads for any problem on the site that does not already have one
     @Cog.listener()
     async def on_ready(self):
-        for channel in self.client.guilds[0].channels:
-            if(channel.name == 'problems'):
-                archived_threads = []
-                async for thread in channel.archived_threads():
-                    archived_threads.append(thread)
-                self.client.problem_threads = channel.threads + archived_threads
-                break
         thread_dict = {}
-        for thread in self.client.problem_threads:
+        async for thread in self.client.get_all_problem_threads():
             thread_dict[thread.name] = True
         async with ClientSession() as s:
             async with s.get("https://api.meters.sh/problems") as r:
@@ -26,9 +19,9 @@ class ProblemPublisher(Cog):
             if(not(thread_dict.get(problem['title'], False))):
                 await self.publish_problem(problem)
 
-    # creates a thread in the problems forum for the passed in problem
+    # creates a thread in the problems forum for the passed in problem and adds it to the list of threads stored by the bot
     async def publish_problem(self, problem):
-        return (await self.forum.create_thread(name = problem['title'], content = f"https://chicoacm.org/problems/{problem['id']}")).thread
+        await self.client.problems_forum.create_thread(name = problem['title'], content = f"https://chicoacm.org/problems/{problem['id']}").thread
 
 # loads the cog
 async def setup(client):
