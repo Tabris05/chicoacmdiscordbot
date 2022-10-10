@@ -10,7 +10,8 @@ class ProblemPublisher(Cog):
     @Cog.listener()
     async def on_ready(self):
         thread_dict = {}
-        async for thread in self.client.get_all_problem_threads():
+        threads = await self.client.get_cog("SharedUtils").get_all_problem_threads()
+        for thread in threads:
             thread_dict[thread.name] = True
         async with ClientSession() as s:
             async with s.get("https://api.meters.sh/problems") as r:

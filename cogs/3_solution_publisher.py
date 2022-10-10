@@ -13,7 +13,8 @@ class SolutionPublisher(Cog):
         async with ClientSession() as s:
             async with s.get(f"https://api.meters.sh/problems/{problem_id}") as r:
                 problem_data = await r.json()
-        async for thread in self.client.get_all_problem_threads():
+        threads = await self.client.get_cog("SharedUtils").get_all_problem_threads()
+        for thread in threads:
             if(thread.name == problem_data['title']):
                 return thread
         else:
