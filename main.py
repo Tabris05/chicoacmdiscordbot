@@ -12,7 +12,7 @@ async def main():
         for filename in listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.load_extension(f'cogs.{filename[:-3]}')
-            await client.start(getenv('ACMBOT_API_KEY'))
+        await client.start(getenv('ACMBOT_API_KEY'))
 
 if(__name__ == "__main__"):
     run(main())

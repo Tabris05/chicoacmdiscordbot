@@ -16,7 +16,7 @@ class WebsocketListener(Cog):
     # listens for incoming data from the websocket and hands it off to the appropriate cog
     @loop()
     async def listen(self):
-        async with connect('wss://api.meters.sh/ws') as ws:
+        async with connect('wss://api.chicoacm.org/ws') as ws:
             for key, value in loads(await ws.recv()).items():
                 if(key == "NewCompletion" or key == "NewStar"):
                     await self.client.get_cog("SolutionPublisher").publish_solution(value)

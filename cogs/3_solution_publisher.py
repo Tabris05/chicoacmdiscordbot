@@ -11,7 +11,7 @@ class SolutionPublisher(Cog):
     # finds the forum thread that corresponds to the problem data passed in
     async def find_thread(self, problem_id):
         async with ClientSession() as s:
-            async with s.get(f"https://api.meters.sh/problems/{problem_id}") as r:
+            async with s.get(f"https://api.chicoacm.org/problems/{problem_id}") as r:
                 problem_data = await r.json()
         threads = await self.client.get_cog("SharedUtils").get_all_problem_threads()
         for thread in threads:
@@ -24,7 +24,7 @@ class SolutionPublisher(Cog):
     async def publish_solution(self, solution):
         thread = await self.find_thread(solution['problem_id'])
         async with ClientSession() as s:
-            async with s.get(f"https://api.meters.sh/user/id/{solution['user_id']}") as r:
+            async with s.get(f"https://api.chicoacm.org/user/id/{solution['user_id']}") as r:
                 user_data = await r.json()
         username = (await self.client.fetch_user(int(user_data['discord_id']))).mention
         code = f"```cpp\n{solution['code'].replace('```', '')}```"

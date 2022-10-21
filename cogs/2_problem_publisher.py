@@ -14,7 +14,7 @@ class ProblemPublisher(Cog):
         for thread in threads:
             thread_dict[thread.name] = True
         async with ClientSession() as s:
-            async with s.get("https://api.meters.sh/problems") as r:
+            async with s.get("https://api.chicoacm.org/problems") as r:
                 problems = await r.json()
         for problem in problems:
             if(not(thread_dict.get(problem['title'], False))):
