@@ -28,7 +28,9 @@ class SolutionPublisher(Cog):
                 user_data = await r.json()
         username = (await self.client.fetch_user(int(user_data['discord_id']))).mention
         code = f"```cpp\n{solution['code'].replace('```', '')}```"
-        code = code if len(code) <= 4096 else "`Solution length exceeds Discord message limit`"
+        link = f"\n[**View on Website**](https://chicoacm.org/submissions/{solution['id']})"
+        code = code if len(code) + len(link) <= 4096 else "`Solution length exceeds Discord message limit`"
+        code += link
         submission_time = datetime.fromisoformat(f"{solution['time']}+00:00")
         message = Embed(title = "Solution", description = code, timestamp = submission_time)
         message.add_field(name = "Runtime", value = f"{solution['runtime']} fuel")

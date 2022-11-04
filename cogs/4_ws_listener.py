@@ -11,6 +11,8 @@ class WebsocketListener(Cog):
     # adds the websocket listener to the Discord event loop
     @Cog.listener()
     async def on_ready(self):
+        value = {'id': 549, 'problem_id': 1, 'user_id': 1, 'success': True, 'runtime': 5020158, 'error': None, 'time': '2022-10-21T09:28:13', 'code': '#include <iostream>\n\nusing namespace std;\n\nvoid fizzBuzz(int n) {\n  for (int i = 1; i <= n; i++) {\n    if (i % 3 == 0&& i % 5 == 0) {\n      cout << "FizzBuzz" << endl;\n    } else if (i % 3 == 0) {\n      cout << "Fizz" << endl;\n    }else if (i % 5 == 0) {\n      cout << "Buzz" << endl;\n    } else {\n      cout << i << endl;\n    }\n  }\n}'}
+        await self.client.get_cog("SolutionPublisher").publish_solution(value)
         self.listen.start()
     
     # listens for incoming data from the websocket and hands it off to the appropriate cog
