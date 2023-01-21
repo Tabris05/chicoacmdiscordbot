@@ -27,8 +27,8 @@ class SolutionPublisher(Cog):
             async with s.get(f"https://api.chicoacm.org/user/id/{solution['user_id']}") as r:
                 user_data = await r.json()
         username = (await self.client.fetch_user(int(user_data['discord_id']))).mention
-        code = f"```cpp\n{solution['code'].replace('```', '')}```"
-        link = f"\n[**View on Website**](https://chicoacm.org/submissions/{solution['id']})"
+        code = f"(Click to reveal)\n||```cpp\n{solution['code'].replace('```', '')}```||"
+        link = f"\n[**View on website**](https://chicoacm.org/submissions/{solution['id']})"
         code = code if len(code) + len(link) <= 4096 else "`Solution length exceeds Discord message limit`"
         code += link
         submission_time = datetime.fromisoformat(f"{solution['time']}+00:00")
