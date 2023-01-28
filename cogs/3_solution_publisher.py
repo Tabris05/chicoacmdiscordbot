@@ -1,4 +1,4 @@
-from discord.ext.commands import Cog
+﻿from discord.ext.commands import Cog
 from discord import Embed
 from aiohttp import ClientSession
 from datetime import datetime
@@ -7,6 +7,15 @@ from datetime import datetime
 class SolutionPublisher(Cog):
     def __init__(self, client):
         self.client = client # reference to the bot object
+        self.tc_map = { # maps time complexity enum sent from server to appropriate big O formula
+            "CONSTANT": "O(1)", 
+            "LOG": "O(log(n))",
+            "SQRT": "O(√n)",
+            "LINEAR": "O(n)",
+            "LOG_LINEAR": "O(nlog(n))",
+            "QUADRATIC": "O(n²)",
+            "EXPONENTIAL": "O(2ⁿ)"
+        }
 
     # finds the forum thread that corresponds to the problem data passed in
     async def find_thread(self, problem_id):
@@ -34,6 +43,7 @@ class SolutionPublisher(Cog):
         submission_time = datetime.fromisoformat(f"{solution['time']}+00:00")
         message = Embed(title = "Solution", description = code, timestamp = submission_time)
         message.add_field(name = "Runtime", value = f"{solution['runtime']} fuel")
+        message.add_field(name = "Big O (Estimate)", value = f"*{self.tc_map[solution['complexity']]}*")
         message.add_field(name = "Submitted by", value = username)
         await thread.send(embed = message)
 
