@@ -1,8 +1,13 @@
 from discord.ext.commands import Bot
+from discord.utils import setup_logging
 from discord import Intents
 from os import chdir, listdir, getenv
 from os.path import dirname, abspath
 from asyncio import run
+from dotenv import load_dotenv
+import logging
+
+load_dotenv()
 
 # entry point of program
 async def main():
@@ -12,6 +17,9 @@ async def main():
         for filename in listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.load_extension(f'cogs.{filename[:-3]}')
+
+        setup_logging(level=logging.INFO)
+
         await client.start(getenv('ACMBOT_API_KEY'))
 
 if(__name__ == "__main__"):
