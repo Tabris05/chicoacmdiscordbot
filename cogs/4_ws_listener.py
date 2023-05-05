@@ -18,14 +18,16 @@ class WebsocketListener(Cog):
     # listens for incoming data from the websocket and hands it off to the appropriate cog
     @loop()
     async def listen(self):
-        async with connect('wss://api.chicoacm.org/ws', extra_headers = {'Cookie': f"token={getenv('ACMBOT_COOKIE_TOKEN')}"}) as ws:
-            for key, value in loads(await ws.recv()).items():
-                logging.info(f"received message of type {key}:\n{value}")
-
-                if(key == "NewCompletion" or key == "NewStar"):
-                    await self.client.get_cog("SolutionPublisher").publish_solution(value)
-                elif(key == "NewProblem"):
-                    await self.client.get_cog("ProblemPublisher").publish_problem(value)
+        try:
+            async with connect('wss://api.chicoacm.org/ws', extra_headers = {'Cookie': f"token={getenv('ACMBOT_COOKIE_TOKEN')}"}, max_size = 2**128) as ws:
+                for key, value in loads(await ws.recv()).items():
+                    logging.info(f"received message of type {key}:\n{value}")
+                    if(key == "NewCompletion" or key == "NewStar"):
+                        await self.client.get_cog("SolutionPublisher").publish_solution(value)
+                    elif(key == "NewProblem"):
+                        await self.client.get_cog("ProblemPublisher").publish_problem(value)
+        except Exception as e:
+            logging.error(f"websocket connection threw the following exception: {e}")
 
     # cleanup
     def cog_unload(self):

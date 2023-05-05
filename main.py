@@ -7,19 +7,16 @@ from asyncio import run
 from dotenv import load_dotenv
 import logging
 
-load_dotenv()
-
 # entry point of program
 async def main():
+    load_dotenv()
     async with Bot(command_prefix = '!', intents = Intents.default()) as client:
         # loads cogs
         chdir(dirname(abspath(__file__)))
         for filename in listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.load_extension(f'cogs.{filename[:-3]}')
-
         setup_logging(level=logging.INFO)
-
         await client.start(getenv('ACMBOT_API_KEY'))
 
 if(__name__ == "__main__"):
