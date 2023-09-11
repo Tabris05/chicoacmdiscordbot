@@ -13,6 +13,7 @@ async def main():
     async with Bot(command_prefix = '!', intents = Intents.default()) as client:
         # loads cogs
         chdir(dirname(abspath(__file__)))
+        await client.load_extension(f'cogs.shared.shared_utils')
         for filename in listdir('./cogs'):
             if filename.endswith('.py'):
                 await client.load_extension(f'cogs.{filename[:-3]}')
