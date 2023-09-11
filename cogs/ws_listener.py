@@ -27,7 +27,7 @@ class WebsocketListener(Cog):
                     elif(key == "NewProblem"):
                         await self.client.get_cog("ProblemPublisher").publish_problem(value)
         except Exception as e:
-            logging.error(f"websocket connection threw the following exception: {type(e).__name__}")
+            logging.error(f"websocket connection threw {type(e).__name__}: {str(e)}")
 
     # cleanup
     def cog_unload(self):

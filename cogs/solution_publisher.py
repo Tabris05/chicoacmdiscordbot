@@ -43,7 +43,8 @@ class SolutionPublisher(Cog):
         submission_time = datetime.fromisoformat(f"{solution['time']}+00:00")
         message = Embed(title = "Solution", description = code, timestamp = submission_time)
         message.add_field(name = "Runtime", value = f"{solution['runtime']} fuel")
-        message.add_field(name = "Big O (Estimate)", value = f"*{self.tc_map[solution['complexity']]}*")
+        if(solution['complexity']):
+            message.add_field(name = "Big O (Estimate)", value = f"*{self.tc_map[solution['complexity']]}*")
         message.add_field(name = "Submitted by", value = username)
         await thread.send(embed = message)
 
